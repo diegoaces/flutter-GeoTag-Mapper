@@ -8,7 +8,7 @@ class ExifEvent extends Equatable {
 }
 
 class ExifLoadFilesEvent extends ExifEvent {
-  final List<Uint8List?> files;
+  final List<ImageDataModel> files;
 
   const ExifLoadFilesEvent(this.files);
 

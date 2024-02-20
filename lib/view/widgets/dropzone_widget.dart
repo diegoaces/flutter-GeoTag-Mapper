@@ -4,6 +4,7 @@ import 'package:desktop_drop/desktop_drop.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_geotag_mapper/data/models/image_data_model.dart';
 import 'package:flutter_geotag_mapper/presentation/bloc/exif_bloc.dart';
 
 class DropZoneWidget extends StatefulWidget {
@@ -27,9 +28,12 @@ class _DropZoneWidgetState extends State<DropZoneWidget> {
           setState(() {
             _dragging = false;
           });
-          var files = List<Uint8List>.empty(growable: true);
+          var files = List<ImageDataModel>.empty(growable: true);
+
           Future.forEach(details.files, (element) async {
-            files.add(await element.readAsBytes());
+            ImageDataModel file = ImageDataModel(
+                element.name, element.path, await element.readAsBytes());
+            files.add(file);
           }).then((value) => {
                 BlocProvider.of<ExifBloc>(context)
                     .add(ExifLoadFilesEvent(files))
@@ -51,11 +55,22 @@ class _DropZoneWidgetState extends State<DropZoneWidget> {
           });
         },
         child: Container(
-          color: const Color.fromRGBO(
-            41,
-            71,
-            116,
-            1,
+          decoration: BoxDecoration(
+            color: const Color.fromRGBO(
+              41,
+              71,
+              116,
+              1,
+            ),
+            borderRadius: BorderRadius.circular(10),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 5,
+                blurRadius: 7,
+                offset: const Offset(0, 3),
+              ),
+            ],
           ),
           height: size.height * 0.5,
           width: size.width * 0.49,
@@ -93,7 +108,11 @@ class _DropZoneWidgetState extends State<DropZoneWidget> {
                         .pickFiles(allowMultiple: true)
                         .then((value) {
                       if (value != null) {
-                        var files = value.files.map((e) => e.bytes).toList();
+                        var files = value.files
+                            .map((e) => ImageDataModel(
+                                e.name, e.path!, e.bytes as Uint8List))
+                            .toList();
+
                         BlocProvider.of<ExifBloc>(context)
                             .add(ExifLoadFilesEvent(files));
                       }
