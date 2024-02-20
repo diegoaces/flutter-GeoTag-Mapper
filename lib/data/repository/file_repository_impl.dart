@@ -1,4 +1,5 @@
-import 'dart:typed_data';
+import 'package:flutter_geotag_mapper/domain/entity/image_data.dart';
+import 'package:flutter_geotag_mapper/domain/entity/image_exif.dart';
 import 'package:latlong2/latlong.dart';
 
 import 'package:dartz/dartz.dart';
@@ -10,14 +11,14 @@ import 'package:flutter_geotag_mapper/domain/repository/file_repository.dart';
 class FileRepositoryImpl implements FileRepository {
   @override
   Future<Either<Failure, List<ImageExifModel>>> getExifs(
-      List<Uint8List?> path) async {
+      List<ImageData> imageDataModels) async {
     try {
       final List<ImageExifModel> files = [];
 
-      for (var file in path) {
-        Map<String, IfdTag> imageExif = await readExifFromBytes(file!);
-        files.add(ImageExifModel(
-            "file.name", "file.path", exifGPSToLatLng(imageExif)));
+      for (var file in imageDataModels) {
+        Map<String, IfdTag> imageExif = await readExifFromBytes(file.image);
+        files.add(
+            ImageExifModel(file.name, file.path, exifGPSToLatLng(imageExif)));
       }
       return Right(files);
     } catch (e) {
@@ -56,5 +57,10 @@ class FileRepositoryImpl implements FileRepository {
     if (longitudeSignal == 'W') longitude = -longitude;
 
     return LatLng(latitude, longitude);
+  }
+
+  @override
+  Future<Either<Failure, ImageExif>> getExif(ImageExif imageExif) async {
+    return Right(imageExif);
   }
 }

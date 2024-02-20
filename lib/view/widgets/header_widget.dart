@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 class HeaderWidget extends StatelessWidget {
   const HeaderWidget({
     super.key,
-    required this.size,
   });
-
-  final Size size;
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.all(0.0),
       child: Container(

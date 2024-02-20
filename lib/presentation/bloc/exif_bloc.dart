@@ -1,7 +1,6 @@
-import 'dart:typed_data';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_geotag_mapper/data/models/image_data_model.dart';
 import 'package:flutter_geotag_mapper/domain/entity/image_exif.dart';
 import 'package:flutter_geotag_mapper/domain/usecase/add_files_usecase.dart';
 
@@ -15,7 +14,7 @@ class ExifBloc extends Bloc<ExifEvent, ExifState> {
     on<ExifLoadFilesEvent>((event, emit) async {
       emit(ExifLoading());
       var result = await addFilesUseCase(AddFilesParams(files: event.files));
-     await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 1));
 
       result.fold(
         (failure) => emit(const ExifError('Error loading files')),
