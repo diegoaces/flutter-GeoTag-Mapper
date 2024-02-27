@@ -2,6 +2,8 @@
 
 This project was created to read the geotag information from the image and display it on the map.
 
+![Image](/gif/example.gif)
+
 ## Getting Started
 
 Install fvm (Flutter Version Management) to manage the flutter version.
